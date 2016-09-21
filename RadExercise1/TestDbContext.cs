@@ -57,6 +57,8 @@ namespace RadExercise1
         private void seedClubs()
         {
             // Create a list of clubs and populate it test data
+            List<string> strs = new List<string>() { "1", "2", "3" };
+
             Clubs = new List<Club>()
             // Club collection
             {
@@ -70,6 +72,7 @@ namespace RadExercise1
                  ClubMembers = new List<Member>(),
                    CreationDate = DateTime.Now
                     },
+
                 // Second Club record
                 new Club {
                 id = Guid.NewGuid(),
@@ -119,5 +122,14 @@ namespace RadExercise1
             return Students.Take(count).ToList();
         }
 
+        public void AddEvent(string ClubName, ClubEvent clubEvent)
+        {
+            Club clubFound = Clubs.FirstOrDefault(c => c.ClubName == ClubName);
+            if (clubFound != null)
+            {
+                clubFound.ClubEvents.Add(clubEvent);
+            }
+            else Console.WriteLine("Club Name not found {0}", ClubName);
+        }
     }
 }

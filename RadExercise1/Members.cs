@@ -11,6 +11,7 @@ namespace RadExercise1
         public Guid memberID;
         public Guid StudentID;
         public bool approved;
+        public bool admin;
         
     }
 }

@@ -10,8 +10,8 @@ namespace RadExercise1
     {
         public Guid memberID;
         public Guid StudentID;
-        public bool approved;
-        public bool admin;
+        public bool approved = false;
+        public bool admin = false;
         
     }
 }

@@ -9,7 +9,7 @@ namespace RadExercise1
 
     public class Student
     {
-        public Guid playerid;
+        public Guid StudentId;
         public string FirstName;
         public string SecondName;
     
@@ -18,14 +18,14 @@ namespace RadExercise1
         {
             string[] values = csvLine.Split(',');
             Student ImportedStudentRecord = new Student();
-            ImportedStudentRecord.playerid = Guid.NewGuid();
+            ImportedStudentRecord.StudentId = Guid.NewGuid();
             ImportedStudentRecord.FirstName = values[0];
             ImportedStudentRecord.SecondName = values[1];
             return ImportedStudentRecord;
         }
     }
     // Implement IDisposable to allow using 
-    class TestDbContext : IDisposable
+    class TestDbContext : IDisposable,ICloneable
     {
         private bool disposed = false;
         public List<Student> Students = new List<Student>();
@@ -48,10 +48,10 @@ namespace RadExercise1
         {
             // This query will create a random ordered selection based on Guids
             Guid result = Students.Select(s =>
-            new { s.playerid, r = Guid.NewGuid() }) // generate a list of player ids with a 
+            new { s.StudentId, r = Guid.NewGuid() }) // generate a list of player ids with a 
             .OrderBy(o => o.r)                      // orderby the guid which is a randomly generated unique id
             .ToList()                               // convert the IEnumeral to a list
-            .First().playerid;                      // take the first record and grab th eplayerid Guid field value
+            .First().StudentId;                      // take the first record and grab th eplayerid Guid field value
             return result;
         }
         private void seedClubs()
@@ -130,6 +130,11 @@ namespace RadExercise1
                 clubFound.ClubEvents.Add(clubEvent);
             }
             else Console.WriteLine("Club Name not found {0}", ClubName);
+        }
+
+        public object Clone()
+        {
+            return this.Clone();
         }
     }
 }

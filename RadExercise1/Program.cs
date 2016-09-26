@@ -19,7 +19,6 @@ namespace RadExercise1
                 Console.WriteLine(c.Info);
             }
 
-            Question3();
             //foreach (Student s in db.Students)
             //{
             //    Console.WriteLine(s.FirstName + " " + s.SecondName);
@@ -38,8 +37,8 @@ namespace RadExercise1
                 attendees = new List<Member>(),
                 Venue = "Dublin",
                 EventName = "Trials",
-                StartDateTime = new DateTime(2016, 7, 15, 16, 00, 00, DateTimeKind.Local),
-                EndDateTime = new DateTime(2016, 7, 15, 18, 00, 00, DateTimeKind.Local)
+                StartDateTime = new DateTime(2016, 12, 09, 14, 00, 00, DateTimeKind.Local),
+                EndDateTime = new DateTime(2016, 12, 09, 14, 30, 00, DateTimeKind.Local)
 
             });
 
@@ -49,6 +48,7 @@ namespace RadExercise1
                 Console.WriteLine("{0} Event on at {1} sarts {2} and finishes at {3}", c.EventName, c.Venue, c.StartDateTime, c.EndDateTime);
             }
 
+            Question3("ITS FC");
             Console.ReadKey();
 
 
@@ -76,15 +76,19 @@ namespace RadExercise1
                                     e.EndDateTime <= end).ToList();
         }
 
-        static public void Question3()
+        static public void Question3(string clubName)
         {
-            var query = from e in db.Clubs
-                        where e.ClubName == "ITS FC"
-                        select new
-                        {
-                            ClubName = e.ClubName,
-                            ClubEvents = e.ClubEvents
-                        };
+            foreach (Club c in db.Clubs)
+            {
+                var query = from e in c.ClubEvents
+                            where c.ClubName == clubName
+                            select e;
+
+                foreach (ClubEvent clubEv in query)
+                {
+                    Console.WriteLine(c.ClubName + " " + clubEv.Venue + " " + clubEv.EventName);
+                }
+            }
         }
 
         //static public List<Member> Question4()

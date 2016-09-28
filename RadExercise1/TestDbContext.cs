@@ -69,7 +69,7 @@ namespace RadExercise1
                 // Select a random student
                 adminID = GetRandomAdmin(),
                  ClubEvents = new List<ClubEvent>(),
-                 ClubMembers = new List<Member>(),
+                 ClubMembers = GetMembers(10),
                    CreationDate = DateTime.Now
                     },
 
@@ -80,7 +80,7 @@ namespace RadExercise1
                 // Select a random student
                 adminID = GetRandomAdmin(),
                  ClubEvents = new List<ClubEvent>(),
-                 ClubMembers = new List<Member>(),
+                 ClubMembers = GetMembers(10),
                    CreationDate = DateTime.Now
                     },
                 // Third Club record
@@ -90,7 +90,7 @@ namespace RadExercise1
                 // Select a random student
                 adminID = GetRandomAdmin(),
                  ClubEvents = new List<ClubEvent>(),
-                 ClubMembers = new List<Member>(),
+                 ClubMembers = GetMembers(10),
                    CreationDate = DateTime.Now
                     },
 
@@ -130,6 +130,44 @@ namespace RadExercise1
                 clubFound.ClubEvents.Add(clubEvent);
             }
             else Console.WriteLine("Club Name not found {0}", ClubName);
+        }
+
+        public bool addMember(String ClubName, Student s, out string Error)
+        {
+            // Checking Club
+            Club club =  Clubs.Where(c => c.ClubName == ClubName).FirstOrDefault();
+            if(club == null) { Error = "Club does not exist"; return false; }
+
+            Student validStudent = Students
+                                .FirstOrDefault(student => student.StudentId == s.StudentId);
+                // Check Student
+            if(validStudent == null) { Error = "Student does not exist"; return false; }
+
+            Member current = club.ClubMembers.FirstOrDefault(m => m.StudentID == s.StudentId);
+
+                    if(current != null) { Error = "Student Already a member"; return false; }
+            // IF WE'VE GOT THIS FAR Add the member
+            club.ClubMembers.Add(new
+                        Member
+                    {
+                        memberID = Guid.NewGuid(),
+                        StudentID = validStudent.StudentId
+                    });
+
+                    Error = "ok Member Added";
+                    return true;
+        }
+
+        public List<Member> GetMembers(int count)
+        {
+            return Students.Select(s =>
+           new Member { memberID = Guid.NewGuid(),
+                StudentID = s.StudentId, }) 
+            .OrderBy(m => m.memberID).Take(count)                                                     // generate a list of player ids with a 
+           .ToList();                               // convert the IEnumeral to a list
+           
+           
+
         }
 
         public object Clone()

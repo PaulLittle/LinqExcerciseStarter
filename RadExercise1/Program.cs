@@ -59,6 +59,11 @@ namespace RadExercise1
                 Console.WriteLine("Question 3 {0} Event on at {1} sarts {2} and finishes at {3}", c.EventName, c.Venue, c.StartDateTime, c.EndDateTime);
             }
 
+            var members = Question4("ITS FC");
+            foreach (var item in members)
+            {
+                Console.WriteLine("{0} is a member of club {1}", item.Name, "ITS FC");
+            }
             Console.ReadKey();
             
              
@@ -93,8 +98,15 @@ namespace RadExercise1
                            .SelectMany(c => c.ClubEvents).ToList();
         }
 
-        static public void Question4() {
-            // Write LINQ Query
+        static public dynamic Question4(string clubName)
+        {
+            List<Member> clubMembers = db.Clubs.FirstOrDefault(c => c.ClubName == clubName).ClubMembers;
+            var namedMembers = (from clubmember in clubMembers
+                                join student in db.Students
+                                on clubmember.StudentID equals student.StudentId
+                                select new { Name = student.FirstName + " " + student.SecondName })
+                 .ToList();
+            return namedMembers;
         }
 
     }

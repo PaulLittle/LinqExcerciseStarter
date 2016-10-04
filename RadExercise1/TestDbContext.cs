@@ -9,7 +9,7 @@ namespace RadExercise1
 
     public class Student
     {
-        public Guid playerid;
+        public Guid StudentId;
         public string FirstName;
         public string SecondName;
     
@@ -18,14 +18,14 @@ namespace RadExercise1
         {
             string[] values = csvLine.Split(',');
             Student ImportedStudentRecord = new Student();
-            ImportedStudentRecord.playerid = Guid.NewGuid();
+            ImportedStudentRecord.StudentId = Guid.NewGuid();
             ImportedStudentRecord.FirstName = values[0];
             ImportedStudentRecord.SecondName = values[1];
             return ImportedStudentRecord;
         }
     }
     // Implement IDisposable to allow using 
-    class TestDbContext : IDisposable
+    class TestDbContext : IDisposable,ICloneable
     {
         private bool disposed = false;
         public List<Student> Students = new List<Student>();
@@ -48,13 +48,12 @@ namespace RadExercise1
         {
             // This query will create a random ordered selection based on Guids
             Guid result = Students.Select(s =>
-            new { s.playerid, r = Guid.NewGuid() }) // generate a list of player ids with a 
+            new { s.StudentId, r = Guid.NewGuid() }) // generate a list of player ids with a 
             .OrderBy(o => o.r)                      // orderby the guid which is a randomly generated unique id
             .ToList()                               // convert the IEnumeral to a list
-            .First().playerid;                      // take the first record and grab th eplayerid Guid field value
+            .First().StudentId;                      // take the first record and grab th eplayerid Guid field value
             return result;
         }
-
         private void seedClubs()
         {
             // Create a list of clubs and populate it test data
@@ -70,9 +69,10 @@ namespace RadExercise1
                 // Select a random student
                 adminID = GetRandomAdmin(),
                  ClubEvents = new List<ClubEvent>(),
-                 ClubMembers = new List<Member>(),
+                 ClubMembers = GetMembers(10),
                    CreationDate = DateTime.Now
                     },
+
                 // Second Club record
                 new Club {
                 id = Guid.NewGuid(),
@@ -80,7 +80,7 @@ namespace RadExercise1
                 // Select a random student
                 adminID = GetRandomAdmin(),
                  ClubEvents = new List<ClubEvent>(),
-                 ClubMembers = new List<Member>(),
+                 ClubMembers = GetMembers(10),
                    CreationDate = DateTime.Now
                     },
                 // Third Club record
@@ -90,7 +90,7 @@ namespace RadExercise1
                 // Select a random student
                 adminID = GetRandomAdmin(),
                  ClubEvents = new List<ClubEvent>(),
-                 ClubMembers = new List<Member>(),
+                 ClubMembers = GetMembers(10),
                    CreationDate = DateTime.Now
                     },
 
@@ -132,14 +132,42 @@ namespace RadExercise1
             else Console.WriteLine("Club Name not found {0}", ClubName);
         }
 
-        public void AddMember(string ClubName, Member member)
+        public bool addMember(String ClubName, Student s, out string Error)
         {
-            Club clubFound = Clubs.FirstOrDefault(c => c.ClubName == ClubName);
-            if (clubFound != null)
-            {
-                clubFound.ClubMembers.Add(member);
-            }
-            else Console.WriteLine("Club Name not found {0}", ClubName);
+            // Checking Club
+            Club club =  Clubs.Where(c => c.ClubName == ClubName).FirstOrDefault();
+            if(club == null) { Error = "Club does not exist"; return false; }
+
+            Student validStudent = Students
+                                .FirstOrDefault(student => student.StudentId == s.StudentId);
+                // Check Student
+            if(validStudent == null) { Error = "Student does not exist"; return false; }
+
+            Member current = club.ClubMembers.FirstOrDefault(m => m.StudentID == s.StudentId);
+
+                    if(current != null) { Error = "Student Already a member"; return false; }
+            // IF WE'VE GOT THIS FAR Add the member
+            club.ClubMembers.Add(new
+                        Member
+                    {
+                        memberID = Guid.NewGuid(),
+                        StudentID = validStudent.StudentId
+                    });
+
+                    Error = "ok Member Added";
+                    return true;
+        }
+
+        public List<Member> GetMembers(int count)
+        {
+            return Students.Select(s =>
+           new Member { memberID = Guid.NewGuid(),
+                StudentID = s.StudentId, }) 
+            .OrderBy(m => m.memberID).Take(count)                                                     // generate a list of player ids with a 
+           .ToList();                               // convert the IEnumeral to a list
+           
+           
+
         }
 
         public object Clone()

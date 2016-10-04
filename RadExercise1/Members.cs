@@ -9,10 +9,9 @@ namespace RadExercise1
     internal class Member
     {
         public Guid memberID;
-        public string firstName;
-        public string surname;
+        public Guid StudentID;
         public bool approved = false;
         public bool admin = false;
-
+        
     }
 }

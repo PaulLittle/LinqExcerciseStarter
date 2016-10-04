@@ -42,27 +42,23 @@ namespace RadExercise1
 
             });
 
+            db.AddMember("ITS GAA ", new Member
+            {
+                memberID = Guid.NewGuid(),
+                approved = true,
+                admin = false
+            });
+
             // Question 2
             foreach (ClubEvent c in Question2(new DateTime(2016, 12, 09, 13, 00, 00), new DateTime(2016, 12, 09, 15, 00, 00)))
             {
                 Console.WriteLine("{0} Event on at {1} sarts {2} and finishes at {3}", c.EventName, c.Venue, c.StartDateTime, c.EndDateTime);
             }
 
+            // Question 3
             Question3("ITS FC");
             Console.ReadKey();
 
-
-        }
-
-        static void AddEvent(string ClubName, ClubEvent clubEvent)
-        {
-            Club clubFound = db.Clubs.FirstOrDefault(c => c.ClubName == ClubName);
-            if (clubFound != null)
-            {
-                clubFound.ClubEvents.Add(clubEvent);
-            }
-            else
-                Console.WriteLine("Club name not found\t{0}", ClubName);
 
         }
 
@@ -78,15 +74,16 @@ namespace RadExercise1
 
         static public void Question3(string clubName)
         {
+            Console.WriteLine("Events for " + clubName);
             foreach (Club c in db.Clubs)
             {
                 var query = from e in c.ClubEvents
                             where c.ClubName == clubName
                             select e;
-
+                
                 foreach (ClubEvent clubEv in query)
                 {
-                    Console.WriteLine(c.ClubName + " " + clubEv.Venue + " " + clubEv.EventName);
+                    Console.WriteLine(clubEv.Venue + " " + clubEv.EventName);
                 }
             }
         }

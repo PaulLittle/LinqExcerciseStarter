@@ -132,6 +132,16 @@ namespace RadExercise1
             else Console.WriteLine("Club Name not found {0}", ClubName);
         }
 
+        public void AddMember(string ClubName, Member member)
+        {
+            Club clubFound = Clubs.FirstOrDefault(c => c.ClubName == ClubName);
+            if (clubFound != null)
+            {
+                clubFound.ClubMembers.Add(member);
+            }
+            else Console.WriteLine("Club Name not found {0}", ClubName);
+        }
+
         public object Clone()
         {
             return this.Clone();
